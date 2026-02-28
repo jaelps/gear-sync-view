@@ -1,20 +1,38 @@
 import Layout from "@/components/Layout";
 import EquipmentStatus from "@/components/dashboard/EquipmentStatus";
 import { equipamentos } from "@/data/mockData";
-import { Settings, CheckCircle, Wrench, AlertCircle } from "lucide-react";
+import { CheckCircle, Wrench, AlertCircle, Download } from "lucide-react";
+import { exportToExcel } from "@/lib/exportExcel";
+import { Button } from "@/components/ui/button";
 
 const Equipamentos = () => {
   const ativos = equipamentos.filter((e) => e.status === "Ativo").length;
   const manutencao = equipamentos.filter((e) => e.status === "Manutenção").length;
   const inativos = equipamentos.filter((e) => e.status === "Inativo").length;
 
+  const handleExport = () => {
+    const data = equipamentos.map((e) => ({
+      Nome: e.nome,
+      Código: e.codigo,
+      Tipo: e.tipo,
+      Capacidade: e.capacidade,
+      Status: e.status,
+    }));
+    exportToExcel(data, "equipamentos", "Equipamentos");
+  };
+
   return (
     <Layout>
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Equipamentos</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Cadastro, status e manutenções
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Equipamentos</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Cadastro, status e manutenções
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+          <Download className="w-4 h-4" /> Exportar Excel
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
