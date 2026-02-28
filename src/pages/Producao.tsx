@@ -1,21 +1,37 @@
 import Layout from "@/components/Layout";
 import ProductionLineChart from "@/components/dashboard/ProductionLineChart";
-import KPICards from "@/components/dashboard/KPICards";
 import { producaoDiaria } from "@/data/mockData";
-import { Factory, TrendingUp, Target } from "lucide-react";
+import { Factory, TrendingUp, Target, Download } from "lucide-react";
+import { exportToExcel } from "@/lib/exportExcel";
+import { Button } from "@/components/ui/button";
 
 const Producao = () => {
   const totalSemana = producaoDiaria.reduce((acc, d) => acc + d.producao, 0);
   const totalMeta = producaoDiaria.reduce((acc, d) => acc + d.meta, 0);
   const eficiencia = ((totalSemana / totalMeta) * 100).toFixed(1);
 
+  const handleExport = () => {
+    const data = producaoDiaria.map((d) => ({
+      Dia: d.dia,
+      Produção: d.producao,
+      Meta: d.meta,
+      "Eficiência (%)": ((d.producao / d.meta) * 100).toFixed(1),
+    }));
+    exportToExcel(data, "producao-diaria", "Produção");
+  };
+
   return (
     <Layout>
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Módulo de Produção</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Registro diário, indicadores e acompanhamento
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Módulo de Produção</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Registro diário, indicadores e acompanhamento
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+          <Download className="w-4 h-4" /> Exportar Excel
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -2,20 +2,44 @@ import Layout from "@/components/Layout";
 import InventoryTable from "@/components/dashboard/InventoryTable";
 import ConsumptionPieChart from "@/components/dashboard/ConsumptionPieChart";
 import { insumos } from "@/data/mockData";
-import { AlertTriangle, Package } from "lucide-react";
+import { AlertTriangle, Package, Download } from "lucide-react";
+import { exportToExcel } from "@/lib/exportExcel";
+import { Button } from "@/components/ui/button";
 
 const Estoque = () => {
   const criticos = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo);
   const totalItens = insumos.length;
   const custoTotal = insumos.reduce((acc, i) => acc + i.qtdAtual * i.custoUnitario, 0);
 
+  const handleExport = () => {
+    const data = insumos.map((i) => ({
+      Nome: i.nome,
+      Código: i.codigo,
+      Categoria: i.categoria,
+      Unidade: i.unidade,
+      "Qtd Atual": i.qtdAtual,
+      "Estoque Mínimo": i.estoqueMinimo,
+      Fornecedor: i.fornecedor,
+      "Custo Unitário": i.custoUnitario,
+      "Data Entrada": i.dataEntrada,
+      "Data Validade": i.dataValidade || "",
+      Status: i.qtdAtual < i.estoqueMinimo ? "Crítico" : "OK",
+    }));
+    exportToExcel(data, "estoque-insumos", "Estoque");
+  };
+
   return (
     <Layout>
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Controle de Estoque</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Gestão de insumos, alertas e movimentação
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Controle de Estoque</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Gestão de insumos, alertas e movimentação
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+          <Download className="w-4 h-4" /> Exportar Excel
+        </Button>
       </div>
 
       {/* KPIs de estoque */}
