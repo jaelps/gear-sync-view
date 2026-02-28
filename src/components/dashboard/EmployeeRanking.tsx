@@ -1,7 +1,10 @@
-import { funcionarios } from "@/data/mockData";
+import { Funcionario, funcionarios as defaultFuncionarios } from "@/data/mockData";
 import { TrendingUp, TrendingDown, Clock } from "lucide-react";
 
-export default function EmployeeRanking() {
+interface Props { data?: Funcionario[]; }
+
+export default function EmployeeRanking({ data }: Props) {
+  const funcionarios = data ?? defaultFuncionarios;
   const sorted = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia);
 
   return (

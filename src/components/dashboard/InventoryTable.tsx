@@ -1,7 +1,10 @@
-import { insumos } from "@/data/mockData";
+import { Insumo, insumos as defaultInsumos } from "@/data/mockData";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
-export default function InventoryTable() {
+interface Props { data?: Insumo[]; }
+
+export default function InventoryTable({ data }: Props) {
+  const insumos = data ?? defaultInsumos;
   return (
     <div className="glass-card p-5">
       <h3 className="text-sm font-semibold text-foreground mb-4">

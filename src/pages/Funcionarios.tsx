@@ -1,12 +1,16 @@
+import { useState } from "react";
 import Layout from "@/components/Layout";
 import EmployeeBarChart from "@/components/dashboard/EmployeeBarChart";
 import EmployeeRanking from "@/components/dashboard/EmployeeRanking";
-import { funcionarios } from "@/data/mockData";
+import { Funcionario, funcionarios as defaultFuncionarios } from "@/data/mockData";
 import { Users, Trophy, Clock, Download } from "lucide-react";
-import { exportToExcel } from "@/lib/exportExcel";
+import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
+import ExcelImportButton from "@/components/ExcelImportButton";
 
 const Funcionarios = () => {
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>(defaultFuncionarios);
+
   const totalProd = funcionarios.reduce((acc, f) => acc + f.producaoHoje, 0);
   const melhor = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0];
   const tempoMedioGeral = (funcionarios.reduce((acc, f) => acc + f.tempoMedio, 0) / funcionarios.length).toFixed(1);
@@ -22,6 +26,20 @@ const Funcionarios = () => {
     exportToExcel(data, "funcionarios", "Funcionários");
   };
 
+  const handleImport = async (file: File) => {
+    const imported = await importFromExcel<Funcionario>(file, (row, i) => ({
+      id: String(funcionarios.length + i + 1),
+      nome: String(row["Nome"] ?? ""),
+      producaoHoje: Number(row["Produção Hoje"] ?? row["Producao Hoje"] ?? 0),
+      metaDiaria: Number(row["Meta Diária"] ?? row["Meta Diaria"] ?? 0),
+      eficiencia: Number(row["Eficiência (%)"] ?? row["Eficiencia (%)"] ?? 0),
+      tempoMedio: Number(row["Tempo Médio (min)"] ?? row["Tempo Medio (min)"] ?? 0),
+    }));
+    if (imported.length > 0) {
+      setFuncionarios((prev) => [...prev, ...imported]);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -31,9 +49,12 @@ const Funcionarios = () => {
             Acompanhamento de produtividade e ranking
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-          <Download className="w-4 h-4" /> Exportar Excel
-        </Button>
+        <div className="flex items-center gap-2">
+          <ExcelImportButton onFileSelect={handleImport} />
+          <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="w-4 h-4" /> Exportar Excel
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -74,8 +95,8 @@ const Funcionarios = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <EmployeeBarChart />
-        <EmployeeRanking />
+        <EmployeeBarChart data={funcionarios} />
+        <EmployeeRanking data={funcionarios} />
       </div>
     </Layout>
   );

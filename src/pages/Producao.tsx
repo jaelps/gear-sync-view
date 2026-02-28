@@ -1,11 +1,15 @@
+import { useState } from "react";
 import Layout from "@/components/Layout";
 import ProductionLineChart from "@/components/dashboard/ProductionLineChart";
-import { producaoDiaria } from "@/data/mockData";
+import { producaoDiaria as defaultProducao } from "@/data/mockData";
 import { Factory, TrendingUp, Target, Download } from "lucide-react";
-import { exportToExcel } from "@/lib/exportExcel";
+import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
+import ExcelImportButton from "@/components/ExcelImportButton";
 
 const Producao = () => {
+  const [producaoDiaria, setProducaoDiaria] = useState(defaultProducao);
+
   const totalSemana = producaoDiaria.reduce((acc, d) => acc + d.producao, 0);
   const totalMeta = producaoDiaria.reduce((acc, d) => acc + d.meta, 0);
   const eficiencia = ((totalSemana / totalMeta) * 100).toFixed(1);
@@ -20,6 +24,17 @@ const Producao = () => {
     exportToExcel(data, "producao-diaria", "Produção");
   };
 
+  const handleImport = async (file: File) => {
+    const imported = await importFromExcel(file, (row) => ({
+      dia: String(row["Dia"] ?? ""),
+      producao: Number(row["Produção"] ?? row["Producao"] ?? 0),
+      meta: Number(row["Meta"] ?? 0),
+    }));
+    if (imported.length > 0) {
+      setProducaoDiaria((prev) => [...prev, ...imported]);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -29,9 +44,12 @@ const Producao = () => {
             Registro diário, indicadores e acompanhamento
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-          <Download className="w-4 h-4" /> Exportar Excel
-        </Button>
+        <div className="flex items-center gap-2">
+          <ExcelImportButton onFileSelect={handleImport} />
+          <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="w-4 h-4" /> Exportar Excel
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

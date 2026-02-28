@@ -8,10 +8,13 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { funcionarios } from "@/data/mockData";
+import { Funcionario, funcionarios as defaultFuncionarios } from "@/data/mockData";
 
-export default function EmployeeBarChart() {
-  const data = funcionarios.map((f) => ({
+interface Props { data?: Funcionario[]; }
+
+export default function EmployeeBarChart({ data: propData }: Props) {
+  const funcionarios = propData ?? defaultFuncionarios;
+  const chartData = funcionarios.map((f) => ({
     nome: f.nome.split(" ")[0],
     producao: f.producaoHoje,
     meta: f.metaDiaria,
@@ -23,7 +26,7 @@ export default function EmployeeBarChart() {
         Produção por Funcionário
       </h3>
       <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={data}>
+        <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 20%)" />
           <XAxis dataKey="nome" stroke="hsl(215 15% 55%)" fontSize={12} />
           <YAxis stroke="hsl(215 15% 55%)" fontSize={12} />
@@ -37,7 +40,7 @@ export default function EmployeeBarChart() {
             }}
           />
           <Bar dataKey="producao" radius={[4, 4, 0, 0]} maxBarSize={40}>
-            {data.map((entry, index) => (
+            {chartData.map((entry, index) => (
               <Cell
                 key={index}
                 fill={

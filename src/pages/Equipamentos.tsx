@@ -1,11 +1,15 @@
+import { useState } from "react";
 import Layout from "@/components/Layout";
 import EquipmentStatus from "@/components/dashboard/EquipmentStatus";
-import { equipamentos } from "@/data/mockData";
+import { Equipamento, equipamentos as defaultEquipamentos } from "@/data/mockData";
 import { CheckCircle, Wrench, AlertCircle, Download } from "lucide-react";
-import { exportToExcel } from "@/lib/exportExcel";
+import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
+import ExcelImportButton from "@/components/ExcelImportButton";
 
 const Equipamentos = () => {
+  const [equipamentos, setEquipamentos] = useState<Equipamento[]>(defaultEquipamentos);
+
   const ativos = equipamentos.filter((e) => e.status === "Ativo").length;
   const manutencao = equipamentos.filter((e) => e.status === "Manutenção").length;
   const inativos = equipamentos.filter((e) => e.status === "Inativo").length;
@@ -21,6 +25,26 @@ const Equipamentos = () => {
     exportToExcel(data, "equipamentos", "Equipamentos");
   };
 
+  const handleImport = async (file: File) => {
+    const imported = await importFromExcel<Equipamento>(file, (row, i) => {
+      const status = String(row["Status"] ?? "Ativo");
+      const validStatus: Equipamento["status"] =
+        status === "Manutenção" || status === "Manutencao" ? "Manutenção" :
+        status === "Inativo" ? "Inativo" : "Ativo";
+      return {
+        id: String(equipamentos.length + i + 1),
+        nome: String(row["Nome"] ?? ""),
+        codigo: String(row["Código"] ?? row["Codigo"] ?? ""),
+        tipo: String(row["Tipo"] ?? ""),
+        capacidade: Number(row["Capacidade"] ?? 0),
+        status: validStatus,
+      };
+    });
+    if (imported.length > 0) {
+      setEquipamentos((prev) => [...prev, ...imported]);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -30,9 +54,12 @@ const Equipamentos = () => {
             Cadastro, status e manutenções
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-          <Download className="w-4 h-4" /> Exportar Excel
-        </Button>
+        <div className="flex items-center gap-2">
+          <ExcelImportButton onFileSelect={handleImport} />
+          <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="w-4 h-4" /> Exportar Excel
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -71,7 +98,7 @@ const Equipamentos = () => {
         </div>
       </div>
 
-      <EquipmentStatus />
+      <EquipmentStatus data={equipamentos} />
     </Layout>
   );
 };

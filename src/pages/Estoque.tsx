@@ -1,12 +1,16 @@
+import { useState } from "react";
 import Layout from "@/components/Layout";
 import InventoryTable from "@/components/dashboard/InventoryTable";
 import ConsumptionPieChart from "@/components/dashboard/ConsumptionPieChart";
-import { insumos } from "@/data/mockData";
+import { Insumo, insumos as defaultInsumos } from "@/data/mockData";
 import { AlertTriangle, Package, Download } from "lucide-react";
-import { exportToExcel } from "@/lib/exportExcel";
+import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
+import ExcelImportButton from "@/components/ExcelImportButton";
 
 const Estoque = () => {
+  const [insumos, setInsumos] = useState<Insumo[]>(defaultInsumos);
+
   const criticos = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo);
   const totalItens = insumos.length;
   const custoTotal = insumos.reduce((acc, i) => acc + i.qtdAtual * i.custoUnitario, 0);
@@ -28,6 +32,25 @@ const Estoque = () => {
     exportToExcel(data, "estoque-insumos", "Estoque");
   };
 
+  const handleImport = async (file: File) => {
+    const imported = await importFromExcel<Insumo>(file, (row, i) => ({
+      id: String(insumos.length + i + 1),
+      nome: String(row["Nome"] ?? ""),
+      codigo: String(row["Código"] ?? row["Codigo"] ?? ""),
+      categoria: String(row["Categoria"] ?? ""),
+      unidade: String(row["Unidade"] ?? ""),
+      qtdAtual: Number(row["Qtd Atual"] ?? 0),
+      estoqueMinimo: Number(row["Estoque Mínimo"] ?? row["Estoque Minimo"] ?? 0),
+      fornecedor: String(row["Fornecedor"] ?? ""),
+      custoUnitario: Number(row["Custo Unitário"] ?? row["Custo Unitario"] ?? 0),
+      dataEntrada: String(row["Data Entrada"] ?? new Date().toISOString().slice(0, 10)),
+      dataValidade: row["Data Validade"] ? String(row["Data Validade"]) : undefined,
+    }));
+    if (imported.length > 0) {
+      setInsumos((prev) => [...prev, ...imported]);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-between">
@@ -37,9 +60,12 @@ const Estoque = () => {
             Gestão de insumos, alertas e movimentação
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-          <Download className="w-4 h-4" /> Exportar Excel
-        </Button>
+        <div className="flex items-center gap-2">
+          <ExcelImportButton onFileSelect={handleImport} />
+          <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="w-4 h-4" /> Exportar Excel
+          </Button>
+        </div>
       </div>
 
       {/* KPIs de estoque */}
@@ -81,7 +107,7 @@ const Estoque = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          <InventoryTable />
+          <InventoryTable data={insumos} />
         </div>
         <ConsumptionPieChart />
       </div>

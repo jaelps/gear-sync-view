@@ -1,4 +1,4 @@
-import { equipamentos } from "@/data/mockData";
+import { Equipamento, equipamentos as defaultEquipamentos } from "@/data/mockData";
 import { Wrench, Power, AlertCircle } from "lucide-react";
 
 const statusConfig = {
@@ -7,7 +7,10 @@ const statusConfig = {
   Inativo: { icon: AlertCircle, colorClass: "text-destructive", bgClass: "bg-destructive/15" },
 };
 
-export default function EquipmentStatus() {
+interface Props { data?: Equipamento[]; }
+
+export default function EquipmentStatus({ data }: Props) {
+  const equipamentos = data ?? defaultEquipamentos;
   return (
     <div className="glass-card p-5">
       <h3 className="text-sm font-semibold text-foreground mb-4">
