@@ -7,7 +7,7 @@ import { AlertTriangle, Package, Download } from "lucide-react";
 import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import ExcelImportButton from "@/components/ExcelImportButton";
-
+import AddInsumoForm from "@/components/forms/AddInsumoForm";
 const Estoque = () => {
   const [insumos, setInsumos] = useState<Insumo[]>(defaultInsumos);
 
@@ -61,9 +61,10 @@ const Estoque = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AddInsumoForm nextId={insumos.length + 1} onAdd={(item) => setInsumos((prev) => [...prev, item])} />
           <ExcelImportButton onFileSelect={handleImport} />
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-            <Download className="w-4 h-4" /> Exportar Excel
+            <Download className="w-4 h-4" /> Exportar
           </Button>
         </div>
       </div>

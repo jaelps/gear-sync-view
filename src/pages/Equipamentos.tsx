@@ -6,6 +6,7 @@ import { CheckCircle, Wrench, AlertCircle, Download } from "lucide-react";
 import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import ExcelImportButton from "@/components/ExcelImportButton";
+import AddEquipamentoForm from "@/components/forms/AddEquipamentoForm";
 
 const Equipamentos = () => {
   const [equipamentos, setEquipamentos] = useState<Equipamento[]>(defaultEquipamentos);
@@ -55,9 +56,10 @@ const Equipamentos = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AddEquipamentoForm nextId={equipamentos.length + 1} onAdd={(item) => setEquipamentos((prev) => [...prev, item])} />
           <ExcelImportButton onFileSelect={handleImport} />
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-            <Download className="w-4 h-4" /> Exportar Excel
+            <Download className="w-4 h-4" /> Exportar
           </Button>
         </div>
       </div>

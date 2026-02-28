@@ -7,6 +7,7 @@ import { Users, Trophy, Clock, Download } from "lucide-react";
 import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import ExcelImportButton from "@/components/ExcelImportButton";
+import AddFuncionarioForm from "@/components/forms/AddFuncionarioForm";
 
 const Funcionarios = () => {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>(defaultFuncionarios);
@@ -50,9 +51,10 @@ const Funcionarios = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AddFuncionarioForm nextId={funcionarios.length + 1} onAdd={(item) => setFuncionarios((prev) => [...prev, item])} />
           <ExcelImportButton onFileSelect={handleImport} />
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-            <Download className="w-4 h-4" /> Exportar Excel
+            <Download className="w-4 h-4" /> Exportar
           </Button>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { Factory, TrendingUp, Target, Download } from "lucide-react";
 import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import ExcelImportButton from "@/components/ExcelImportButton";
+import AddProducaoForm from "@/components/forms/AddProducaoForm";
 
 const Producao = () => {
   const [producaoDiaria, setProducaoDiaria] = useState(defaultProducao);
@@ -45,9 +46,10 @@ const Producao = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AddProducaoForm onAdd={(item) => setProducaoDiaria((prev) => [...prev, item])} />
           <ExcelImportButton onFileSelect={handleImport} />
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
-            <Download className="w-4 h-4" /> Exportar Excel
+            <Download className="w-4 h-4" /> Exportar
           </Button>
         </div>
       </div>
