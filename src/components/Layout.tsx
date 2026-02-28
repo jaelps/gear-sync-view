@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
@@ -12,15 +13,17 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Package, label: "Estoque", active: false },
-  { icon: Factory, label: "Produção", active: false },
-  { icon: Users, label: "Funcionários", active: false },
-  { icon: Settings, label: "Equipamentos", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+  { icon: Package, label: "Estoque", path: "/estoque" },
+  { icon: Factory, label: "Produção", path: "/producao" },
+  { icon: Users, label: "Funcionários", path: "/funcionarios" },
+  { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -45,20 +48,24 @@ export default function Layout({ children }: { children: ReactNode }) {
 
         {/* Nav */}
         <nav className="flex-1 py-4 space-y-1 px-2">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              className={cn(
-                "flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm transition-colors",
-                item.active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-              )}
-            >
-              <item.icon className="w-5 h-5 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <button
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                className={cn(
+                  "flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm transition-colors",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                )}
+              >
+                <item.icon className="w-5 h-5 shrink-0" />
+                {!collapsed && <span>{item.label}</span>}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Collapse toggle */}
