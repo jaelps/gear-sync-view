@@ -1,9 +1,14 @@
 import { Insumo, insumos as defaultInsumos } from "@/data/mockData";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Trash2, Minus, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-interface Props { data?: Insumo[]; }
+interface Props {
+  data?: Insumo[];
+  onDelete?: (id: string) => void;
+  onUpdateQtd?: (id: string, delta: number) => void;
+}
 
-export default function InventoryTable({ data }: Props) {
+export default function InventoryTable({ data, onDelete, onUpdateQtd }: Props) {
   const insumos = data ?? defaultInsumos;
   return (
     <div className="glass-card p-5">
@@ -17,13 +22,17 @@ export default function InventoryTable({ data }: Props) {
               <th className="text-left py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Insumo</th>
               <th className="text-left py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Código</th>
               <th className="text-left py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Categoria</th>
-              <th className="text-right py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Qtd</th>
+              <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantidade</th>
               <th className="text-right py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Mínimo</th>
               <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
               <th className="text-right py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Custo</th>
+              {onDelete && <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Ações</th>}
             </tr>
           </thead>
           <tbody>
+            {insumos.length === 0 && (
+              <tr><td colSpan={8} className="text-center py-6 text-muted-foreground">Nenhum insumo cadastrado.</td></tr>
+            )}
             {insumos.map((item) => {
               const critical = item.qtdAtual < item.estoqueMinimo;
               return (
@@ -38,8 +47,33 @@ export default function InventoryTable({ data }: Props) {
                       {item.categoria}
                     </span>
                   </td>
-                  <td className={`py-2.5 px-3 text-right font-medium ${critical ? "text-destructive" : "text-foreground"}`}>
-                    {item.qtdAtual} {item.unidade}
+                  <td className="py-2.5 px-3 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
+                      {onUpdateQtd && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => onUpdateQtd(item.id, -1)}
+                          disabled={item.qtdAtual <= 0}
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <span className={`font-medium ${critical ? "text-destructive" : "text-foreground"}`}>
+                        {item.qtdAtual} {item.unidade}
+                      </span>
+                      {onUpdateQtd && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => onUpdateQtd(item.id, 1)}
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      )}
+                    </div>
                   </td>
                   <td className="py-2.5 px-3 text-right text-muted-foreground">
                     {item.estoqueMinimo} {item.unidade}
@@ -58,6 +92,18 @@ export default function InventoryTable({ data }: Props) {
                   <td className="py-2.5 px-3 text-right text-muted-foreground">
                     R$ {item.custoUnitario.toFixed(2)}
                   </td>
+                  {onDelete && (
+                    <td className="py-2.5 px-3 text-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                        onClick={() => onDelete(item.id)}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               );
             })}

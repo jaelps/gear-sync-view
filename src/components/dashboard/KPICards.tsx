@@ -1,53 +1,66 @@
-import { Package, DollarSign, AlertTriangle, Trophy } from "lucide-react";
+import { Package, DollarSign, AlertTriangle, Trophy, Users, Settings } from "lucide-react";
+import { Insumo, Funcionario, Equipamento } from "@/data/mockData";
 
-const kpis = [
-  {
-    title: "Produção Hoje",
-    value: "713",
-    unit: "unidades",
-    change: "+5.2%",
-    positive: true,
-    icon: Package,
-    glowClass: "glow-primary",
-    iconBg: "bg-primary/15",
-    iconColor: "text-primary",
-  },
-  {
-    title: "Custo do Dia",
-    value: "R$ 4.280",
-    unit: "",
-    change: "-2.1%",
-    positive: true,
-    icon: DollarSign,
-    glowClass: "glow-success",
-    iconBg: "bg-success/15",
-    iconColor: "text-success",
-  },
-  {
-    title: "Estoque Crítico",
-    value: "4",
-    unit: "itens",
-    change: "+2",
-    positive: false,
-    icon: AlertTriangle,
-    glowClass: "glow-accent",
-    iconBg: "bg-accent/15",
-    iconColor: "text-accent",
-  },
-  {
-    title: "Destaque",
-    value: "Ana Souza",
-    unit: "112% eficiência",
-    change: "",
-    positive: true,
-    icon: Trophy,
-    glowClass: "glow-primary",
-    iconBg: "bg-primary/15",
-    iconColor: "text-primary",
-  },
-];
+interface Props {
+  insumos: Insumo[];
+  funcionarios: Funcionario[];
+  equipamentos: Equipamento[];
+}
 
-export default function KPICards() {
+export default function KPICards({ insumos, funcionarios, equipamentos }: Props) {
+  const estoqueCritico = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo).length;
+  const totalItens = insumos.reduce((s, i) => s + i.qtdAtual, 0);
+  const custoTotal = insumos.reduce((s, i) => s + i.qtdAtual * i.custoUnitario, 0);
+  const melhor = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0];
+  const ativos = equipamentos.filter((e) => e.status === "Ativo").length;
+
+  const kpis = [
+    {
+      title: "Itens em Estoque",
+      value: totalItens.toLocaleString("pt-BR"),
+      unit: `${insumos.length} produtos`,
+      change: `${estoqueCritico} crítico(s)`,
+      positive: estoqueCritico === 0,
+      icon: Package,
+      glowClass: "glow-primary",
+      iconBg: "bg-primary/15",
+      iconColor: "text-primary",
+    },
+    {
+      title: "Valor em Estoque",
+      value: `R$ ${custoTotal.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+      unit: "",
+      change: "",
+      positive: true,
+      icon: DollarSign,
+      glowClass: "glow-success",
+      iconBg: "bg-success/15",
+      iconColor: "text-success",
+    },
+    {
+      title: "Funcionários",
+      value: String(funcionarios.length),
+      unit: melhor ? `Destaque: ${melhor.nome.split(" ")[0]}` : "",
+      change: melhor ? `${melhor.eficiencia.toFixed(1)}% eficiência` : "",
+      positive: true,
+      icon: Users,
+      glowClass: "glow-accent",
+      iconBg: "bg-accent/15",
+      iconColor: "text-accent",
+    },
+    {
+      title: "Equipamentos",
+      value: String(equipamentos.length),
+      unit: `${ativos} ativo(s)`,
+      change: "",
+      positive: true,
+      icon: Settings,
+      glowClass: "glow-primary",
+      iconBg: "bg-primary/15",
+      iconColor: "text-primary",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((kpi) => (
@@ -72,7 +85,7 @@ export default function KPICards() {
                 kpi.positive ? "text-success" : "text-destructive"
               }`}
             >
-              {kpi.change} vs ontem
+              {kpi.change}
             </p>
           )}
         </div>
