@@ -8,6 +8,28 @@ export function exportToExcel(data: Record<string, unknown>[], fileName: string,
   XLSX.writeFile(wb, `${fileName}.xlsx`);
 }
 
+export function exportMultiSheetReport(
+  sheets: { name: string; data: Record<string, unknown>[] }[],
+  fileName: string,
+) {
+  const wb = XLSX.utils.book_new();
+  for (const sheet of sheets) {
+    const ws = XLSX.utils.json_to_sheet(sheet.data);
+    // Auto-width columns
+    const cols = sheet.data.length > 0
+      ? Object.keys(sheet.data[0]).map((key) => ({
+          wch: Math.max(
+            key.length,
+            ...sheet.data.map((row) => String(row[key] ?? "").length)
+          ) + 2,
+        }))
+      : [];
+    ws["!cols"] = cols;
+    XLSX.utils.book_append_sheet(wb, ws, sheet.name.slice(0, 31));
+  }
+  XLSX.writeFile(wb, `${fileName}.xlsx`);
+}
+
 export function importFromExcel<T>(
   file: File,
   mapRow: (row: Record<string, unknown>, index: number) => T | null,

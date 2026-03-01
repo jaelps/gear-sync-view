@@ -1,4 +1,4 @@
-import { Package, DollarSign, AlertTriangle, Trophy, Users, Settings } from "lucide-react";
+import { Package, AlertTriangle, Trophy, Users, Settings } from "lucide-react";
 import { Insumo, Funcionario, Equipamento } from "@/data/mockData";
 
 interface Props {
@@ -10,9 +10,8 @@ interface Props {
 export default function KPICards({ insumos, funcionarios, equipamentos }: Props) {
   const estoqueCritico = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo).length;
   const totalItens = insumos.reduce((s, i) => s + i.qtdAtual, 0);
-  const custoTotal = insumos.reduce((s, i) => s + i.qtdAtual * i.custoUnitario, 0);
   const melhor = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0];
-  const ativos = equipamentos.filter((e) => e.status === "Ativo").length;
+  const emProducao = equipamentos.filter((e) => e.status === "Em Produção").length;
 
   const kpis = [
     {
@@ -27,12 +26,12 @@ export default function KPICards({ insumos, funcionarios, equipamentos }: Props)
       iconColor: "text-primary",
     },
     {
-      title: "Valor em Estoque",
-      value: `R$ ${custoTotal.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+      title: "Fornecedores",
+      value: String(new Set(insumos.map(i => i.fornecedor)).size),
       unit: "",
       change: "",
       positive: true,
-      icon: DollarSign,
+      icon: Package,
       glowClass: "glow-success",
       iconBg: "bg-success/15",
       iconColor: "text-success",
@@ -51,7 +50,7 @@ export default function KPICards({ insumos, funcionarios, equipamentos }: Props)
     {
       title: "Equipamentos",
       value: String(equipamentos.length),
-      unit: `${ativos} ativo(s)`,
+      unit: `${emProducao} em produção`,
       change: "",
       positive: true,
       icon: Settings,

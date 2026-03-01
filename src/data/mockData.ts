@@ -7,9 +7,7 @@ export interface Insumo {
   qtdAtual: number;
   estoqueMinimo: number;
   fornecedor: string;
-  custoUnitario: number;
   dataEntrada: string;
-  dataValidade?: string;
 }
 
 export interface ProducaoRegistro {
@@ -37,18 +35,18 @@ export interface Equipamento {
   codigo: string;
   tipo: string;
   capacidade: number;
-  status: "Ativo" | "Manutenção" | "Inativo";
+  status: "Em Produção" | "Finalizado";
 }
 
 export const insumos: Insumo[] = [
-  { id: "1", nome: "Resina Epóxi", codigo: "INS-001", categoria: "Químico", unidade: "kg", qtdAtual: 45, estoqueMinimo: 100, fornecedor: "QuímicaBR", custoUnitario: 28.5, dataEntrada: "2026-02-20", dataValidade: "2026-06-20" },
-  { id: "2", nome: "Aço Inox 304", codigo: "INS-002", categoria: "Metal", unidade: "kg", qtdAtual: 320, estoqueMinimo: 200, fornecedor: "MetalSul", custoUnitario: 15.0, dataEntrada: "2026-02-15" },
-  { id: "3", nome: "Parafuso M8", codigo: "INS-003", categoria: "Fixação", unidade: "un", qtdAtual: 1200, estoqueMinimo: 500, fornecedor: "FixaTudo", custoUnitario: 0.35, dataEntrada: "2026-02-18" },
-  { id: "4", nome: "Óleo Lubrificante", codigo: "INS-004", categoria: "Químico", unidade: "L", qtdAtual: 12, estoqueMinimo: 30, fornecedor: "LubriMax", custoUnitario: 42.0, dataEntrada: "2026-02-10", dataValidade: "2026-03-10" },
-  { id: "5", nome: "Chapa Alumínio 2mm", codigo: "INS-005", categoria: "Metal", unidade: "m²", qtdAtual: 85, estoqueMinimo: 50, fornecedor: "AlumiPro", custoUnitario: 62.0, dataEntrada: "2026-02-22" },
-  { id: "6", nome: "Tinta Industrial", codigo: "INS-006", categoria: "Químico", unidade: "L", qtdAtual: 8, estoqueMinimo: 25, fornecedor: "PintaCor", custoUnitario: 55.0, dataEntrada: "2026-02-12", dataValidade: "2026-04-12" },
-  { id: "7", nome: "Borracha Vedação", codigo: "INS-007", categoria: "Vedação", unidade: "m", qtdAtual: 150, estoqueMinimo: 80, fornecedor: "VedaBem", custoUnitario: 8.9, dataEntrada: "2026-02-25" },
-  { id: "8", nome: "Solda MIG", codigo: "INS-008", categoria: "Consumível", unidade: "kg", qtdAtual: 18, estoqueMinimo: 40, fornecedor: "SoldaTec", custoUnitario: 35.0, dataEntrada: "2026-02-14" },
+  { id: "1", nome: "Resina Epóxi", codigo: "INS-001", categoria: "Químico", unidade: "kg", qtdAtual: 45, estoqueMinimo: 100, fornecedor: "QuímicaBR", dataEntrada: "2026-02-20" },
+  { id: "2", nome: "Aço Inox 304", codigo: "INS-002", categoria: "Metal", unidade: "kg", qtdAtual: 320, estoqueMinimo: 200, fornecedor: "MetalSul", dataEntrada: "2026-02-15" },
+  { id: "3", nome: "Parafuso M8", codigo: "INS-003", categoria: "Fixação", unidade: "un", qtdAtual: 1200, estoqueMinimo: 500, fornecedor: "FixaTudo", dataEntrada: "2026-02-18" },
+  { id: "4", nome: "Óleo Lubrificante", codigo: "INS-004", categoria: "Químico", unidade: "L", qtdAtual: 12, estoqueMinimo: 30, fornecedor: "LubriMax", dataEntrada: "2026-02-10" },
+  { id: "5", nome: "Chapa Alumínio 2mm", codigo: "INS-005", categoria: "Metal", unidade: "m²", qtdAtual: 85, estoqueMinimo: 50, fornecedor: "AlumiPro", dataEntrada: "2026-02-22" },
+  { id: "6", nome: "Tinta Industrial", codigo: "INS-006", categoria: "Químico", unidade: "L", qtdAtual: 8, estoqueMinimo: 25, fornecedor: "PintaCor", dataEntrada: "2026-02-12" },
+  { id: "7", nome: "Borracha Vedação", codigo: "INS-007", categoria: "Vedação", unidade: "m", qtdAtual: 150, estoqueMinimo: 80, fornecedor: "VedaBem", dataEntrada: "2026-02-25" },
+  { id: "8", nome: "Solda MIG", codigo: "INS-008", categoria: "Consumível", unidade: "kg", qtdAtual: 18, estoqueMinimo: 40, fornecedor: "SoldaTec", dataEntrada: "2026-02-14" },
 ];
 
 export const funcionarios: Funcionario[] = [
@@ -78,9 +76,9 @@ export const consumoInsumos = [
 ];
 
 export const equipamentos: Equipamento[] = [
-  { id: "1", nome: "Torno CNC A1", codigo: "EQ-001", tipo: "Usinagem", capacidade: 200, status: "Ativo" },
-  { id: "2", nome: "Prensa Hidráulica", codigo: "EQ-002", tipo: "Conformação", capacidade: 150, status: "Ativo" },
-  { id: "3", nome: "Fresadora B2", codigo: "EQ-003", tipo: "Usinagem", capacidade: 180, status: "Manutenção" },
-  { id: "4", nome: "Soldadora MIG", codigo: "EQ-004", tipo: "Soldagem", capacidade: 120, status: "Ativo" },
-  { id: "5", nome: "Injetora Plástico", codigo: "EQ-005", tipo: "Injeção", capacidade: 300, status: "Inativo" },
+  { id: "1", nome: "Torno CNC A1", codigo: "EQ-001", tipo: "Usinagem", capacidade: 200, status: "Em Produção" },
+  { id: "2", nome: "Prensa Hidráulica", codigo: "EQ-002", tipo: "Conformação", capacidade: 150, status: "Em Produção" },
+  { id: "3", nome: "Fresadora B2", codigo: "EQ-003", tipo: "Usinagem", capacidade: 180, status: "Finalizado" },
+  { id: "4", nome: "Soldadora MIG", codigo: "EQ-004", tipo: "Soldagem", capacidade: 120, status: "Em Produção" },
+  { id: "5", nome: "Injetora Plástico", codigo: "EQ-005", tipo: "Injeção", capacidade: 300, status: "Finalizado" },
 ];

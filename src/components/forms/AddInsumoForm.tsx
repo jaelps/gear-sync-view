@@ -17,8 +17,7 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
   const [form, setForm] = useState({
     nome: "", codigo: "", categoria: "", unidade: "kg",
     qtdAtual: "", estoqueMinimo: "", fornecedor: "",
-    custoUnitario: "", dataEntrada: new Date().toISOString().slice(0, 10),
-    dataValidade: "",
+    dataEntrada: new Date().toISOString().slice(0, 10),
   });
 
   const update = (field: string, value: string) => setForm((f) => ({ ...f, [field]: value }));
@@ -38,12 +37,10 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
       qtdAtual: Number(form.qtdAtual) || 0,
       estoqueMinimo: Number(form.estoqueMinimo) || 0,
       fornecedor: form.fornecedor.trim(),
-      custoUnitario: Number(form.custoUnitario) || 0,
       dataEntrada: form.dataEntrada,
-      dataValidade: form.dataValidade || undefined,
     });
     toast.success("Insumo adicionado!");
-    setForm({ nome: "", codigo: "", categoria: "", unidade: "kg", qtdAtual: "", estoqueMinimo: "", fornecedor: "", custoUnitario: "", dataEntrada: new Date().toISOString().slice(0, 10), dataValidade: "" });
+    setForm({ nome: "", codigo: "", categoria: "", unidade: "kg", qtdAtual: "", estoqueMinimo: "", fornecedor: "", dataEntrada: new Date().toISOString().slice(0, 10) });
     setOpen(false);
   };
 
@@ -88,16 +85,8 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
             <Input id="fornecedor" value={form.fornecedor} onChange={(e) => update("fornecedor", e.target.value)} maxLength={100} />
           </div>
           <div>
-            <Label htmlFor="custoUnitario">Custo Unitário (R$)</Label>
-            <Input id="custoUnitario" type="number" min="0" step="0.01" value={form.custoUnitario} onChange={(e) => update("custoUnitario", e.target.value)} />
-          </div>
-          <div>
             <Label htmlFor="dataEntrada">Data Entrada</Label>
             <Input id="dataEntrada" type="date" value={form.dataEntrada} onChange={(e) => update("dataEntrada", e.target.value)} />
-          </div>
-          <div>
-            <Label htmlFor="dataValidade">Data Validade</Label>
-            <Input id="dataValidade" type="date" value={form.dataValidade} onChange={(e) => update("dataValidade", e.target.value)} />
           </div>
           <div className="col-span-2 flex justify-end gap-2 mt-2">
             <Button type="button" variant="outline" size="sm" onClick={() => setOpen(false)}>Cancelar</Button>

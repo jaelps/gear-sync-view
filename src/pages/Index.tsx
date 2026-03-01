@@ -12,7 +12,7 @@ import AddFuncionarioForm from "@/components/forms/AddFuncionarioForm";
 import AddEquipamentoForm from "@/components/forms/AddEquipamentoForm";
 import { Button } from "@/components/ui/button";
 import { Download, CalendarDays } from "lucide-react";
-import { exportToExcel } from "@/lib/exportExcel";
+import { exportMultiSheetReport } from "@/lib/exportExcel";
 import { toast } from "sonner";
 import {
   Insumo,
@@ -56,10 +56,25 @@ const Index = () => {
     toast.success("Equipamento removido.");
   };
 
-  // Export full report
   const handleExportReport = () => {
+    const now = new Date().toLocaleDateString("pt-BR");
+
+    // Resumo
+    const estoqueCritico = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo).length;
+    const emProducao = equipamentos.filter((e) => e.status === "Em Produção").length;
+    const melhorFunc = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0];
+    const resumo = [
+      { Indicador: "Data do Relatório", Valor: now },
+      { Indicador: "Total de Insumos", Valor: insumos.length },
+      { Indicador: "Itens em Estoque Crítico", Valor: estoqueCritico },
+      { Indicador: "Total de Funcionários", Valor: funcionarios.length },
+      { Indicador: "Melhor Eficiência", Valor: melhorFunc ? `${melhorFunc.nome} (${melhorFunc.eficiencia}%)` : "-" },
+      { Indicador: "Total de Equipamentos", Valor: equipamentos.length },
+      { Indicador: "Em Produção", Valor: emProducao },
+      { Indicador: "Finalizados", Valor: equipamentos.length - emProducao },
+    ];
+
     const insumoData = insumos.map((i) => ({
-      Tipo: "Insumo",
       Nome: i.nome,
       Código: i.codigo,
       Categoria: i.categoria,
@@ -67,35 +82,36 @@ const Index = () => {
       Unidade: i.unidade,
       "Estoque Mínimo": i.estoqueMinimo,
       Fornecedor: i.fornecedor,
-      "Custo Unitário": i.custoUnitario,
+      "Data Entrada": i.dataEntrada,
       Status: i.qtdAtual < i.estoqueMinimo ? "Crítico" : "OK",
     }));
+
     const funcData = funcionarios.map((f) => ({
-      Tipo: "Funcionário",
       Nome: f.nome,
       "Produção Hoje": f.producaoHoje,
       "Meta Diária": f.metaDiaria,
       "Eficiência (%)": f.eficiencia,
       "Tempo Médio (min)": f.tempoMedio,
     }));
+
     const eqData = equipamentos.map((e) => ({
-      Tipo: "Equipamento",
       Nome: e.nome,
       Código: e.codigo,
-      TipoEquip: e.tipo,
+      Tipo: e.tipo,
       "Capacidade (un/dia)": e.capacidade,
       Status: e.status,
     }));
 
-    // Export each as a separate sheet would be ideal, but exportToExcel does single sheet
-    // Let's do a combined export
-    const allData = [
-      ...insumoData.map((d) => ({ ...d } as Record<string, unknown>)),
-      ...funcData.map((d) => ({ ...d } as Record<string, unknown>)),
-      ...eqData.map((d) => ({ ...d } as Record<string, unknown>)),
-    ];
-    exportToExcel(allData, "relatorio-completo", "Relatório");
-    toast.success("Relatório exportado!");
+    exportMultiSheetReport(
+      [
+        { name: "Resumo", data: resumo as Record<string, unknown>[] },
+        { name: "Estoque", data: insumoData as Record<string, unknown>[] },
+        { name: "Funcionários", data: funcData as Record<string, unknown>[] },
+        { name: "Equipamentos", data: eqData as Record<string, unknown>[] },
+      ],
+      `relatorio-completo-${new Date().toISOString().slice(0, 10)}`
+    );
+    toast.success("Relatório completo exportado com sucesso!");
   };
 
   return (

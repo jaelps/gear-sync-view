@@ -13,7 +13,7 @@ const Estoque = () => {
 
   const criticos = insumos.filter((i) => i.qtdAtual < i.estoqueMinimo);
   const totalItens = insumos.length;
-  const custoTotal = insumos.reduce((acc, i) => acc + i.qtdAtual * i.custoUnitario, 0);
+  const totalQtd = insumos.reduce((acc, i) => acc + i.qtdAtual, 0);
 
   const handleExport = () => {
     const data = insumos.map((i) => ({
@@ -24,9 +24,7 @@ const Estoque = () => {
       "Qtd Atual": i.qtdAtual,
       "Estoque Mínimo": i.estoqueMinimo,
       Fornecedor: i.fornecedor,
-      "Custo Unitário": i.custoUnitario,
       "Data Entrada": i.dataEntrada,
-      "Data Validade": i.dataValidade || "",
       Status: i.qtdAtual < i.estoqueMinimo ? "Crítico" : "OK",
     }));
     exportToExcel(data, "estoque-insumos", "Estoque");
@@ -42,9 +40,7 @@ const Estoque = () => {
       qtdAtual: Number(row["Qtd Atual"] ?? 0),
       estoqueMinimo: Number(row["Estoque Mínimo"] ?? row["Estoque Minimo"] ?? 0),
       fornecedor: String(row["Fornecedor"] ?? ""),
-      custoUnitario: Number(row["Custo Unitário"] ?? row["Custo Unitario"] ?? 0),
       dataEntrada: String(row["Data Entrada"] ?? new Date().toISOString().slice(0, 10)),
-      dataValidade: row["Data Validade"] ? String(row["Data Validade"]) : undefined,
     }));
     if (imported.length > 0) {
       setInsumos((prev) => [...prev, ...imported]);
@@ -99,8 +95,8 @@ const Estoque = () => {
               <Package className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Custo em Estoque</p>
-              <p className="text-2xl font-bold text-foreground">R$ {custoTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Total em Estoque</p>
+              <p className="text-2xl font-bold text-foreground">{totalQtd.toLocaleString("pt-BR")}</p>
             </div>
           </div>
         </div>
