@@ -1,18 +1,25 @@
 import { Funcionario, funcionarios as defaultFuncionarios } from "@/data/mockData";
-import { TrendingUp, TrendingDown, Clock } from "lucide-react";
+import { TrendingUp, TrendingDown, Clock, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-interface Props { data?: Funcionario[]; }
+interface Props {
+  data?: Funcionario[];
+  onDelete?: (id: string) => void;
+}
 
-export default function EmployeeRanking({ data }: Props) {
+export default function EmployeeRanking({ data, onDelete }: Props) {
   const funcionarios = data ?? defaultFuncionarios;
   const sorted = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia);
 
   return (
     <div className="glass-card p-5">
       <h3 className="text-sm font-semibold text-foreground mb-4">
-        Ranking de Produtividade
+        Funcionários
       </h3>
       <div className="space-y-3">
+        {sorted.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">Nenhum funcionário cadastrado.</p>
+        )}
         {sorted.map((f, i) => {
           const aboveMeta = f.eficiencia >= 100;
           return (
@@ -52,6 +59,16 @@ export default function EmployeeRanking({ data }: Props) {
                   {f.eficiencia.toFixed(1)}%
                 </span>
               </div>
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                  onClick={() => onDelete(f.id)}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              )}
             </div>
           );
         })}
