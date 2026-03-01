@@ -15,7 +15,7 @@ interface Props {
 
 export default function AddEquipamentoForm({ onAdd, nextId }: Props) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ nome: "", codigo: "", tipo: "", capacidade: "", status: "Ativo" as Equipamento["status"] });
+  const [form, setForm] = useState({ nome: "", codigo: "", tipo: "", capacidade: "", status: "Em Produção" as Equipamento["status"] });
 
   const update = (field: string, value: string) => setForm((f) => ({ ...f, [field]: value }));
 
@@ -34,7 +34,7 @@ export default function AddEquipamentoForm({ onAdd, nextId }: Props) {
       status: form.status,
     });
     toast.success("Equipamento adicionado!");
-    setForm({ nome: "", codigo: "", tipo: "", capacidade: "", status: "Ativo" });
+    setForm({ nome: "", codigo: "", tipo: "", capacidade: "", status: "Em Produção" });
     setOpen(false);
   };
 
@@ -73,9 +73,8 @@ export default function AddEquipamentoForm({ onAdd, nextId }: Props) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ativo">Ativo</SelectItem>
-                <SelectItem value="Manutenção">Manutenção</SelectItem>
-                <SelectItem value="Inativo">Inativo</SelectItem>
+                <SelectItem value="Em Produção">Em Produção</SelectItem>
+                <SelectItem value="Finalizado">Finalizado</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -1,11 +1,10 @@
 import { Equipamento, equipamentos as defaultEquipamentos } from "@/data/mockData";
-import { Wrench, Power, AlertCircle, Trash2 } from "lucide-react";
+import { Wrench, Power, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const statusConfig = {
-  Ativo: { icon: Power, colorClass: "text-success", bgClass: "bg-success/15" },
-  Manutenção: { icon: Wrench, colorClass: "text-accent", bgClass: "bg-accent/15" },
-  Inativo: { icon: AlertCircle, colorClass: "text-destructive", bgClass: "bg-destructive/15" },
+const statusConfig: Record<string, { icon: typeof Power; colorClass: string; bgClass: string }> = {
+  "Em Produção": { icon: Power, colorClass: "text-success", bgClass: "bg-success/15" },
+  "Finalizado": { icon: Wrench, colorClass: "text-muted-foreground", bgClass: "bg-muted/15" },
 };
 
 interface Props {

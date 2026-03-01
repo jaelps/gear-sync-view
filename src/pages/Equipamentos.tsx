@@ -2,7 +2,7 @@ import { useState } from "react";
 import Layout from "@/components/Layout";
 import EquipmentStatus from "@/components/dashboard/EquipmentStatus";
 import { Equipamento, equipamentos as defaultEquipamentos } from "@/data/mockData";
-import { CheckCircle, Wrench, AlertCircle, Download } from "lucide-react";
+import { CheckCircle, AlertCircle, Download } from "lucide-react";
 import { exportToExcel, importFromExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import ExcelImportButton from "@/components/ExcelImportButton";
@@ -11,9 +11,8 @@ import AddEquipamentoForm from "@/components/forms/AddEquipamentoForm";
 const Equipamentos = () => {
   const [equipamentos, setEquipamentos] = useState<Equipamento[]>(defaultEquipamentos);
 
-  const ativos = equipamentos.filter((e) => e.status === "Ativo").length;
-  const manutencao = equipamentos.filter((e) => e.status === "Manutenção").length;
-  const inativos = equipamentos.filter((e) => e.status === "Inativo").length;
+  const emProducao = equipamentos.filter((e) => e.status === "Em Produção").length;
+  const finalizados = equipamentos.filter((e) => e.status === "Finalizado").length;
 
   const handleExport = () => {
     const data = equipamentos.map((e) => ({
@@ -28,10 +27,9 @@ const Equipamentos = () => {
 
   const handleImport = async (file: File) => {
     const imported = await importFromExcel<Equipamento>(file, (row, i) => {
-      const status = String(row["Status"] ?? "Ativo");
+      const status = String(row["Status"] ?? "Em Produção");
       const validStatus: Equipamento["status"] =
-        status === "Manutenção" || status === "Manutencao" ? "Manutenção" :
-        status === "Inativo" ? "Inativo" : "Ativo";
+        status === "Finalizado" ? "Finalizado" : "Em Produção";
       return {
         id: String(equipamentos.length + i + 1),
         nome: String(row["Nome"] ?? ""),
@@ -64,37 +62,26 @@ const Equipamentos = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="glass-card p-5">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-lg bg-success/15">
               <CheckCircle className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Ativos</p>
-              <p className="text-2xl font-bold text-success">{ativos}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Em Produção</p>
+              <p className="text-2xl font-bold text-success">{emProducao}</p>
             </div>
           </div>
         </div>
         <div className="glass-card p-5">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-accent/15">
-              <Wrench className="w-5 h-5 text-accent" />
+            <div className="p-2.5 rounded-lg bg-muted/15">
+              <AlertCircle className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Em Manutenção</p>
-              <p className="text-2xl font-bold text-accent">{manutencao}</p>
-            </div>
-          </div>
-        </div>
-        <div className="glass-card p-5">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-destructive/15">
-              <AlertCircle className="w-5 h-5 text-destructive" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Inativos</p>
-              <p className="text-2xl font-bold text-destructive">{inativos}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Finalizados</p>
+              <p className="text-2xl font-bold text-muted-foreground">{finalizados}</p>
             </div>
           </div>
         </div>

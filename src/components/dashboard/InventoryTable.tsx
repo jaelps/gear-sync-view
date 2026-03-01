@@ -25,13 +25,12 @@ export default function InventoryTable({ data, onDelete, onUpdateQtd }: Props) {
               <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantidade</th>
               <th className="text-right py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Mínimo</th>
               <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-              <th className="text-right py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Custo</th>
               {onDelete && <th className="text-center py-2.5 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Ações</th>}
             </tr>
           </thead>
           <tbody>
             {insumos.length === 0 && (
-              <tr><td colSpan={8} className="text-center py-6 text-muted-foreground">Nenhum insumo cadastrado.</td></tr>
+              <tr><td colSpan={7} className="text-center py-6 text-muted-foreground">Nenhum insumo cadastrado.</td></tr>
             )}
             {insumos.map((item) => {
               const critical = item.qtdAtual < item.estoqueMinimo;
@@ -87,10 +86,7 @@ export default function InventoryTable({ data, onDelete, onUpdateQtd }: Props) {
                       <span className="inline-flex items-center gap-1 text-xs text-success">
                         <CheckCircle className="w-3.5 h-3.5" /> OK
                       </span>
-                    )}
-                  </td>
-                  <td className="py-2.5 px-3 text-right text-muted-foreground">
-                    R$ {item.custoUnitario.toFixed(2)}
+                  )}
                   </td>
                   {onDelete && (
                     <td className="py-2.5 px-3 text-center">
