@@ -16,7 +16,7 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     nome: "", codigo: "", categoria: "", unidade: "kg",
-    qtdAtual: "", estoqueMinimo: "", fornecedor: "",
+    qtdAtual: "", estoqueMinimo: "",
     dataEntrada: new Date().toISOString().slice(0, 10),
   });
 
@@ -36,11 +36,11 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
       unidade: form.unidade.trim(),
       qtdAtual: Number(form.qtdAtual) || 0,
       estoqueMinimo: Number(form.estoqueMinimo) || 0,
-      fornecedor: form.fornecedor.trim(),
+      fornecedor: "",
       dataEntrada: form.dataEntrada,
     });
     toast.success("Insumo adicionado!");
-    setForm({ nome: "", codigo: "", categoria: "", unidade: "kg", qtdAtual: "", estoqueMinimo: "", fornecedor: "", dataEntrada: new Date().toISOString().slice(0, 10) });
+    setForm({ nome: "", codigo: "", categoria: "", unidade: "kg", qtdAtual: "", estoqueMinimo: "", dataEntrada: new Date().toISOString().slice(0, 10) });
     setOpen(false);
   };
 
@@ -79,10 +79,6 @@ export default function AddInsumoForm({ onAdd, nextId }: Props) {
           <div>
             <Label htmlFor="estoqueMinimo">Estoque Mínimo</Label>
             <Input id="estoqueMinimo" type="number" min="0" value={form.estoqueMinimo} onChange={(e) => update("estoqueMinimo", e.target.value)} />
-          </div>
-          <div>
-            <Label htmlFor="fornecedor">Fornecedor</Label>
-            <Input id="fornecedor" value={form.fornecedor} onChange={(e) => update("fornecedor", e.target.value)} maxLength={100} />
           </div>
           <div>
             <Label htmlFor="dataEntrada">Data Entrada</Label>
