@@ -9,44 +9,47 @@ import {
   ChevronLeft,
   ChevronRight,
   Activity,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-  { icon: Package, label: "Estoque", path: "/estoque" },
-  { icon: Factory, label: "Produção", path: "/producao" },
-  { icon: Users, label: "Funcionários", path: "/funcionarios" },
-  { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
-];
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLider, signOut, user } = useAuth();
+
+  const navItems = [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: Package, label: "Estoque", path: "/estoque" },
+    { icon: Factory, label: "Produção", path: "/producao" },
+    ...(isLider ? [{ icon: Users, label: "Funcionários", path: "/funcionarios" }] : []),
+    { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <aside
         className={cn(
           "flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300",
           collapsed ? "w-16" : "w-60"
         )}
       >
-        {/* Logo */}
         <div className="flex items-center gap-3 px-4 h-16 border-b border-sidebar-border">
           <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/20">
             <Activity className="w-5 h-5 text-primary" />
           </div>
           {!collapsed && (
-            <span className="font-bold text-foreground text-sm tracking-wide">
-              IndústriaCtrl
-            </span>
+            <span className="font-bold text-foreground text-sm tracking-wide">Datatec</span>
           )}
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 py-4 space-y-1 px-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -68,7 +71,15 @@ export default function Layout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
-        {/* Collapse toggle */}
+        {/* Sign out */}
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-3 mx-2 mb-2 px-3 py-2.5 rounded-md text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors"
+        >
+          <LogOut className="w-5 h-5 shrink-0" />
+          {!collapsed && <span>Sair</span>}
+        </button>
+
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center justify-center h-12 border-t border-sidebar-border text-sidebar-foreground hover:text-foreground transition-colors"
@@ -77,7 +88,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      {/* Main */}
       <main className="flex-1 overflow-y-auto">
         <div className="p-6 space-y-6">{children}</div>
       </main>
