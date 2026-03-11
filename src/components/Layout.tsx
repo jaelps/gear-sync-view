@@ -20,13 +20,17 @@ export default function Layout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const { isLider, signOut, user } = useAuth();
 
-  const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-    { icon: Package, label: "Estoque", path: "/estoque" },
-    { icon: Factory, label: "Produção", path: "/producao" },
-    ...(isLider ? [{ icon: Users, label: "Funcionários", path: "/funcionarios" }] : []),
-    { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
-  ];
+  const navItems = isLider
+    ? [
+        { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+        { icon: Package, label: "Estoque", path: "/estoque" },
+        { icon: Factory, label: "Produção", path: "/producao" },
+        { icon: Users, label: "Funcionários", path: "/funcionarios" },
+        { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
+      ]
+    : [
+        { icon: Package, label: "Estoque", path: "/estoque" },
+      ];
 
   const handleSignOut = async () => {
     await signOut();
