@@ -26,7 +26,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<ProtectedRoute requiredRole="lider"><Index /></ProtectedRoute>} />
             <Route path="/estoque" element={<ProtectedRoute><Estoque /></ProtectedRoute>} />
-            <Route path="/producao" element={<ProtectedRoute requiredRole="lider"><Producao /></ProtectedRoute>} />
+            <Route path="/producao" element={<ProtectedRoute><Producao /></ProtectedRoute>} />
             <Route path="/funcionarios" element={<ProtectedRoute requiredRole="lider"><Funcionarios /></ProtectedRoute>} />
             <Route path="/equipamentos" element={<ProtectedRoute requiredRole="lider"><Equipamentos /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
