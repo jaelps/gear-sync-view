@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Activity,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
