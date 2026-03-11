@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Activity,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,6 +28,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         { icon: Factory, label: "Produção", path: "/producao" },
         { icon: Users, label: "Funcionários", path: "/funcionarios" },
         { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
+        { icon: ClipboardList, label: "Pendências", path: "/pendencias" },
       ]
     : [
         { icon: Package, label: "Estoque", path: "/estoque" },

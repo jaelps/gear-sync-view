@@ -10,6 +10,7 @@ import Estoque from "./pages/Estoque";
 import Producao from "./pages/Producao";
 import Funcionarios from "./pages/Funcionarios";
 import Equipamentos from "./pages/Equipamentos";
+import Pendencias from "./pages/Pendencias";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/producao" element={<ProtectedRoute><Producao /></ProtectedRoute>} />
             <Route path="/funcionarios" element={<ProtectedRoute requiredRole="lider"><Funcionarios /></ProtectedRoute>} />
             <Route path="/equipamentos" element={<ProtectedRoute requiredRole="lider"><Equipamentos /></ProtectedRoute>} />
+            <Route path="/pendencias" element={<ProtectedRoute requiredRole="lider"><Pendencias /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
