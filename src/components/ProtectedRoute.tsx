@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function ProtectedRoute({ children, requiredRole }: Props) {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, isLider } = useAuth();
 
   if (loading) {
     return (
