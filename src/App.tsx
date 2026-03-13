@@ -11,6 +11,7 @@ import Producao from "./pages/Producao";
 import Funcionarios from "./pages/Funcionarios";
 import Equipamentos from "./pages/Equipamentos";
 import Pendencias from "./pages/Pendencias";
+import MetasPessoais from "./pages/MetasPessoais";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
