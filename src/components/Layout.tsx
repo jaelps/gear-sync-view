@@ -34,6 +34,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     : [
         { icon: Package, label: "Estoque", path: "/estoque" },
         { icon: Factory, label: "Produção", path: "/producao" },
+        { icon: Target, label: "Metas", path: "/metas" },
       ];
 
   const handleSignOut = async () => {
