@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      metas_pessoais: {
+        Row: {
+          concluida: boolean
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          id: string
+          titulo: string
+          unidade: string
+          updated_at: string
+          user_id: string
+          valor_atual: number
+          valor_meta: number
+        }
+        Insert: {
+          concluida?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          titulo: string
+          unidade?: string
+          updated_at?: string
+          user_id: string
+          valor_atual?: number
+          valor_meta?: number
+        }
+        Update: {
+          concluida?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          titulo?: string
+          unidade?: string
+          updated_at?: string
+          user_id?: string
+          valor_atual?: number
+          valor_meta?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

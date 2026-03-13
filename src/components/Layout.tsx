@@ -11,6 +11,7 @@ import {
   Activity,
   LogOut,
   ClipboardList,
+  Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,6 +34,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     : [
         { icon: Package, label: "Estoque", path: "/estoque" },
         { icon: Factory, label: "Produção", path: "/producao" },
+        { icon: Target, label: "Metas", path: "/metas" },
       ];
 
   const handleSignOut = async () => {
