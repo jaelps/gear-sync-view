@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,13 +12,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     const { error } = await signIn(email, password);
     if (error) {
       toast.error(error);
@@ -25,6 +28,25 @@ export default function Login() {
       navigate("/");
     }
     setLoading(false);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail.trim()) {
+      toast.error("Informe seu e-mail.");
+      return;
+    }
+    setForgotLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("E-mail de recuperação enviado! Verifique sua caixa de entrada.");
+      setForgotMode(false);
+    }
+    setForgotLoading(false);
   };
 
   return (
@@ -35,22 +57,58 @@ export default function Login() {
             <Activity className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-xl font-bold text-foreground tracking-wide">Datatec</h1>
-          <p className="text-sm text-muted-foreground">Acesse o sistema</p>
+          <p className="text-sm text-muted-foreground">
+            {forgotMode ? "Recuperar acesso" : "Acesse o sistema"}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu@email.com" />
-          </div>
-          <div>
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Aguarde..." : "Entrar"}
-          </Button>
-        </form>
+        {forgotMode ? (
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div>
+              <Label htmlFor="forgot-email">E-mail cadastrado</Label>
+              <Input
+                id="forgot-email"
+                type="email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="seu@email.com"
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={forgotLoading}>
+              {forgotLoading ? "Enviando..." : "Enviar link de recuperação"}
+            </Button>
+            <button
+              type="button"
+              onClick={() => setForgotMode(false)}
+              className="w-full text-sm text-primary hover:underline"
+            >
+              Voltar ao login
+            </button>
+          </form>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="email">E-mail</Label>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu@email.com" />
+              </div>
+              <div>
+                <Label htmlFor="password">Senha</Label>
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Aguarde..." : "Entrar"}
+              </Button>
+            </form>
+            <button
+              type="button"
+              onClick={() => setForgotMode(true)}
+              className="w-full text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Esqueci minha senha
+            </button>
+          </>
+        )}
 
         <p className="text-center text-xs text-muted-foreground">
           Acesso fornecido pelo líder do setor.

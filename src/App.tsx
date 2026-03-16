@@ -14,6 +14,7 @@ import Pendencias from "./pages/Pendencias";
 import MetasPessoais from "./pages/MetasPessoais";
 import GerenciarAcessos from "./pages/GerenciarAcessos";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
