@@ -14,6 +14,7 @@ import Pendencias from "./pages/Pendencias";
 import MetasPessoais from "./pages/MetasPessoais";
 import GerenciarAcessos from "./pages/GerenciarAcessos";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/" element={<ProtectedRoute requiredRole="lider"><Index /></ProtectedRoute>} />
             <Route path="/estoque" element={<ProtectedRoute><Estoque /></ProtectedRoute>} />
             <Route path="/producao" element={<ProtectedRoute><Producao /></ProtectedRoute>} />

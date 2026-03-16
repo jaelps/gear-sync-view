@@ -59,6 +59,54 @@ export type Database = {
         }
         Relationships: []
       }
+      producao_registros: {
+        Row: {
+          confirmada: boolean
+          confirmada_em: string | null
+          confirmada_por: string | null
+          created_at: string
+          data: string
+          descricao_perda: string | null
+          id: string
+          justificativa: string | null
+          meta: number
+          perda_material: number
+          quantidade_produzida: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          confirmada?: boolean
+          confirmada_em?: string | null
+          confirmada_por?: string | null
+          created_at?: string
+          data?: string
+          descricao_perda?: string | null
+          id?: string
+          justificativa?: string | null
+          meta?: number
+          perda_material?: number
+          quantidade_produzida?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          confirmada?: boolean
+          confirmada_em?: string | null
+          confirmada_por?: string | null
+          created_at?: string
+          data?: string
+          descricao_perda?: string | null
+          id?: string
+          justificativa?: string | null
+          meta?: number
+          perda_material?: number
+          quantidade_produzida?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
