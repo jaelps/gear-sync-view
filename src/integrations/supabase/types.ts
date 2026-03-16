@@ -72,6 +72,9 @@ export type Database = {
           meta: number
           perda_material: number
           quantidade_produzida: number
+          tempo_por_unidade: number
+          tempo_total: number
+          tipo_producao: string
           updated_at: string
           user_id: string
         }
@@ -87,6 +90,9 @@ export type Database = {
           meta?: number
           perda_material?: number
           quantidade_produzida?: number
+          tempo_por_unidade?: number
+          tempo_total?: number
+          tipo_producao?: string
           updated_at?: string
           user_id: string
         }
@@ -102,6 +108,9 @@ export type Database = {
           meta?: number
           perda_material?: number
           quantidade_produzida?: number
+          tempo_por_unidade?: number
+          tempo_total?: number
+          tipo_producao?: string
           updated_at?: string
           user_id?: string
         }
