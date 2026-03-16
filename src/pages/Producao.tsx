@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Factory, TrendingUp, Target, Download, Check, AlertTriangle, PackageMinus } from "lucide-react";
+import { Factory, TrendingUp, Target, Download, Check, AlertTriangle, PackageMinus, Clock } from "lucide-react";
 import { exportToExcel } from "@/lib/exportExcel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,9 @@ interface ProducaoRegistro {
   id: string;
   user_id: string;
   data: string;
+  tipo_producao: string;
+  tempo_por_unidade: number;
+  tempo_total: number;
   quantidade_produzida: number;
   meta: number;
   justificativa: string | null;
@@ -24,6 +27,17 @@ interface ProducaoRegistro {
   created_at: string;
   nome_funcionario?: string;
 }
+
+const formatTempo = (min: number) => {
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  return h > 0 ? `${h}h ${m}min` : `${m}min`;
+};
+
+const TIPO_LABEL: Record<string, string> = {
+  "200": "200 un/dia",
+  "120": "120 un/dia",
+};
 
 const Producao = () => {
   const { user, isLider } = useAuth();
@@ -81,6 +95,7 @@ const Producao = () => {
   const totalProd = registros.reduce((a, r) => a + r.quantidade_produzida, 0);
   const totalMeta = registros.reduce((a, r) => a + r.meta, 0);
   const totalPerda = registros.reduce((a, r) => a + r.perda_material, 0);
+  const totalTempo = registros.reduce((a, r) => a + Number(r.tempo_total || 0), 0);
   const eficiencia = totalMeta > 0 ? ((totalProd / totalMeta) * 100).toFixed(1) : "0";
   const pendentes = registros.filter((r) => !r.confirmada).length;
 
@@ -88,8 +103,11 @@ const Producao = () => {
     const data = registros.map((r) => ({
       Data: r.data,
       Funcionário: r.nome_funcionario || "—",
+      Tipo: TIPO_LABEL[r.tipo_producao] || r.tipo_producao,
       Produzido: r.quantidade_produzida,
       Meta: r.meta,
+      "Tempo/Un (min)": r.tempo_por_unidade,
+      "Tempo Total (min)": r.tempo_total,
       "Perda Material": r.perda_material,
       Justificativa: r.justificativa || "",
       "Desc. Perda": r.descricao_perda || "",
@@ -108,9 +126,7 @@ const Producao = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {!isLider && (
-            <AddProducaoForm onAdd={fetchRegistros} />
-          )}
+          {!isLider && <AddProducaoForm onAdd={fetchRegistros} />}
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
             <Download className="w-4 h-4" /> Exportar
           </Button>
@@ -118,7 +134,7 @@ const Producao = () => {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
         <div className="glass-card p-4 sm:p-5">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary/15">
@@ -138,6 +154,17 @@ const Producao = () => {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Meta</p>
               <p className="text-xl sm:text-2xl font-bold text-foreground">{totalMeta.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+        <div className="glass-card p-4 sm:p-5">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-secondary/30">
+              <Clock className="w-5 h-5 text-foreground" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Tempo Total</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{formatTempo(totalTempo)}</p>
             </div>
           </div>
         </div>
@@ -180,8 +207,10 @@ const Producao = () => {
             <tr className="border-b border-border/50">
               <th className="text-left p-3 text-muted-foreground font-medium">Data</th>
               {isLider && <th className="text-left p-3 text-muted-foreground font-medium">Funcionário</th>}
+              <th className="text-left p-3 text-muted-foreground font-medium">Tipo</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Produzido</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Meta</th>
+              <th className="text-right p-3 text-muted-foreground font-medium">Tempo</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Perdas</th>
               <th className="text-left p-3 text-muted-foreground font-medium">Justificativa</th>
               <th className="text-center p-3 text-muted-foreground font-medium">Status</th>
@@ -191,13 +220,13 @@ const Producao = () => {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={isLider ? 8 : 6} className="p-6 text-center text-muted-foreground">
+                <td colSpan={isLider ? 10 : 8} className="p-6 text-center text-muted-foreground">
                   Carregando...
                 </td>
               </tr>
             ) : registros.length === 0 ? (
               <tr>
-                <td colSpan={isLider ? 8 : 6} className="p-6 text-center text-muted-foreground">
+                <td colSpan={isLider ? 10 : 8} className="p-6 text-center text-muted-foreground">
                   Nenhum registro encontrado.
                 </td>
               </tr>
@@ -208,8 +237,16 @@ const Producao = () => {
                     {new Date(r.data + "T00:00:00").toLocaleDateString("pt-BR")}
                   </td>
                   {isLider && <td className="p-3 text-foreground">{r.nome_funcionario}</td>}
+                  <td className="p-3 text-foreground text-xs">
+                    <Badge variant="secondary" className="font-normal">
+                      {TIPO_LABEL[r.tipo_producao] || r.tipo_producao}
+                    </Badge>
+                  </td>
                   <td className="p-3 text-right text-foreground font-medium">{r.quantidade_produzida}</td>
                   <td className="p-3 text-right text-muted-foreground">{r.meta}</td>
+                  <td className="p-3 text-right text-foreground whitespace-nowrap">
+                    {formatTempo(Number(r.tempo_total || 0))}
+                  </td>
                   <td className="p-3 text-right">
                     {r.perda_material > 0 ? (
                       <span className="text-destructive font-medium" title={r.descricao_perda || ""}>
