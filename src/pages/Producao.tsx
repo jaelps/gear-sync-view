@@ -271,7 +271,7 @@ const Producao = () => {
                       </Badge>
                     )}
                   </td>
-                  {isLider && (
+                  {canConfirm && (
                     <td className="p-3 text-center">
                       {!r.confirmada && (
                         <Button size="sm" variant="ghost" onClick={() => handleConfirm(r.id)} className="gap-1 text-success hover:text-success">
