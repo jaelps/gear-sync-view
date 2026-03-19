@@ -215,7 +215,7 @@ const Producao = () => {
               <th className="text-right p-3 text-muted-foreground font-medium">Perdas</th>
               <th className="text-left p-3 text-muted-foreground font-medium">Justificativa</th>
               <th className="text-center p-3 text-muted-foreground font-medium">Status</th>
-              {isLider && <th className="text-center p-3 text-muted-foreground font-medium">Ação</th>}
+              {canConfirm && <th className="text-center p-3 text-muted-foreground font-medium">Ação</th>}
             </tr>
           </thead>
           <tbody>
