@@ -80,8 +80,8 @@ const Funcionarios = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Destaque do Dia</p>
-              <p className="text-2xl font-bold text-foreground">{melhor.nome.split(" ")[0]}</p>
-              <p className="text-xs text-success">{melhor.eficiencia}% eficiência</p>
+              <p className="text-2xl font-bold text-foreground">{melhor ? melhor.nome.split(" ")[0] : "-"}</p>
+              {melhor && <p className="text-xs text-success">{melhor.eficiencia}% eficiência</p>}
             </div>
           </div>
         </div>
