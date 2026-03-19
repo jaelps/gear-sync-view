@@ -87,7 +87,7 @@ export default function Login() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      toast.success("Líder cadastrado com sucesso! Faça login.");
+      toast.success("Gestor cadastrado com sucesso! Faça login.");
       setHasLeader(true);
       setMode("login");
       setEmail(setupEmail);
