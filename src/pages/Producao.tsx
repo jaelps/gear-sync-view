@@ -207,7 +207,7 @@ const Producao = () => {
           <thead>
             <tr className="border-b border-border/50">
               <th className="text-left p-3 text-muted-foreground font-medium">Data</th>
-              {isLider && <th className="text-left p-3 text-muted-foreground font-medium">Funcionário</th>}
+              {canConfirm && <th className="text-left p-3 text-muted-foreground font-medium">Funcionário</th>}
               <th className="text-left p-3 text-muted-foreground font-medium">Tipo</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Produzido</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Meta</th>
