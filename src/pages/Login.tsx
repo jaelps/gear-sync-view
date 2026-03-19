@@ -92,7 +92,7 @@ export default function Login() {
       setMode("login");
       setEmail(setupEmail);
     } catch (err: any) {
-      toast.error(err.message || "Erro ao cadastrar líder.");
+      toast.error(err.message || "Erro ao cadastrar gestor.");
     }
     setSetupLoading(false);
   };
