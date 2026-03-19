@@ -8,13 +8,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UserPlus, Users, Package, Shield, Trash2 } from "lucide-react";
+import { UserPlus, Users, Package, Shield, Factory, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 interface UserProfile {
   user_id: string;
   nome: string;
   responsavel_estoque: boolean;
+  lider_producao: boolean;
+  responsavel_limpeza: boolean;
   role?: string;
 }
 
@@ -29,7 +31,7 @@ export default function GerenciarAcessos() {
   const fetchUsers = async () => {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("user_id, nome, responsavel_estoque");
+      .select("user_id, nome, responsavel_estoque, lider_producao, responsavel_limpeza");
 
     const { data: roles } = await supabase
       .from("user_roles")
@@ -79,17 +81,23 @@ export default function GerenciarAcessos() {
     setFormLoading(false);
   };
 
-  const toggleEstoque = async (userId: string, current: boolean) => {
+  const toggleProfileFlag = async (userId: string, field: "responsavel_estoque" | "lider_producao" | "responsavel_limpeza", current: boolean) => {
+    const labels: Record<string, [string, string]> = {
+      responsavel_estoque: ["Líder de Estoque concedido.", "Líder de Estoque removido."],
+      lider_producao: ["Líder de Produção concedido.", "Líder de Produção removido."],
+      responsavel_limpeza: ["Responsável de limpeza atribuído.", "Responsável de limpeza removido."],
+    };
+
     const { error } = await supabase
       .from("profiles")
-      .update({ responsavel_estoque: !current })
+      .update({ [field]: !current })
       .eq("user_id", userId);
 
     if (error) {
       toast.error("Erro ao atualizar permissão.");
     } else {
-      toast.success(!current ? "Acesso ao estoque concedido." : "Acesso ao estoque removido.");
-      setUsers((prev) => prev.map((u) => u.user_id === userId ? { ...u, responsavel_estoque: !current } : u));
+      toast.success(!current ? labels[field][0] : labels[field][1]);
+      setUsers((prev) => prev.map((u) => u.user_id === userId ? { ...u, [field]: !current } : u));
     }
   };
 
@@ -145,14 +153,14 @@ export default function GerenciarAcessos() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="glass-card p-5">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-lg bg-primary/15">
               <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Usuários</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Total</p>
               <p className="text-2xl font-bold text-foreground">{users.length}</p>
             </div>
           </div>
@@ -171,10 +179,21 @@ export default function GerenciarAcessos() {
         <div className="glass-card p-5">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-lg bg-success/15">
-              <Package className="w-5 h-5 text-success" />
+              <Factory className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Resp. Estoque</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Líd. Produção</p>
+              <p className="text-2xl font-bold text-foreground">{users.filter((u) => u.lider_producao).length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="glass-card p-5">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-secondary/30">
+              <Package className="w-5 h-5 text-foreground" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Líd. Estoque</p>
               <p className="text-2xl font-bold text-foreground">{users.filter((u) => u.responsavel_estoque).length}</p>
             </div>
           </div>
@@ -189,17 +208,19 @@ export default function GerenciarAcessos() {
               <tr className="border-b border-border/50">
                 <th className="text-left p-4 text-muted-foreground font-medium">Nome</th>
                 <th className="text-left p-4 text-muted-foreground font-medium hidden sm:table-cell">Tipo</th>
-                <th className="text-center p-4 text-muted-foreground font-medium">Resp. Estoque</th>
+                <th className="text-center p-4 text-muted-foreground font-medium">Líd. Produção</th>
+                <th className="text-center p-4 text-muted-foreground font-medium">Líd. Estoque</th>
+                <th className="text-center p-4 text-muted-foreground font-medium">Limpeza Hoje</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={3} className="p-8 text-center text-muted-foreground">Carregando...</td>
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Carregando...</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="p-8 text-center text-muted-foreground">Nenhum usuário encontrado</td>
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Nenhum usuário encontrado</td>
                 </tr>
               ) : (
                 users.map((u) => (
@@ -217,8 +238,24 @@ export default function GerenciarAcessos() {
                     <td className="p-4">
                       <div className="flex justify-center">
                         <Switch
+                          checked={u.lider_producao}
+                          onCheckedChange={() => toggleProfileFlag(u.user_id, "lider_producao", u.lider_producao)}
+                        />
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex justify-center">
+                        <Switch
                           checked={u.responsavel_estoque}
-                          onCheckedChange={() => toggleEstoque(u.user_id, u.responsavel_estoque)}
+                          onCheckedChange={() => toggleProfileFlag(u.user_id, "responsavel_estoque", u.responsavel_estoque)}
+                        />
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex justify-center">
+                        <Switch
+                          checked={u.responsavel_limpeza}
+                          onCheckedChange={() => toggleProfileFlag(u.user_id, "responsavel_limpeza", u.responsavel_limpeza)}
                         />
                       </div>
                     </td>

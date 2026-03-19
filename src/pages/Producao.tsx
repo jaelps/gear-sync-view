@@ -40,7 +40,8 @@ const TIPO_LABEL: Record<string, string> = {
 };
 
 const Producao = () => {
-  const { user, isLider } = useAuth();
+  const { user, isLider, isLiderProducao } = useAuth();
+  const canConfirm = isLider || isLiderProducao;
   const [registros, setRegistros] = useState<ProducaoRegistro[]>([]);
   const [loading, setLoading] = useState(true);
 
