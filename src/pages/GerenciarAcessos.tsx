@@ -163,7 +163,7 @@ export default function GerenciarAcessos() {
               <Shield className="w-5 h-5 text-accent" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Líderes</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Gestores</p>
               <p className="text-2xl font-bold text-foreground">{users.filter((u) => u.role === "lider").length}</p>
             </div>
           </div>
