@@ -123,7 +123,7 @@ const Producao = () => {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Módulo de Produção</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isLider ? "Acompanhe e confirme a produção dos funcionários" : "Registre sua produção diária"}
+            {canConfirm ? "Acompanhe e confirme a produção dos funcionários" : "Registre sua produção diária"}
           </p>
         </div>
         <div className="flex items-center gap-2">
