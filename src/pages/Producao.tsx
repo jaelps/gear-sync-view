@@ -127,7 +127,7 @@ const Producao = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {!isLider && <AddProducaoForm onAdd={fetchRegistros} />}
+          {!isLider && !isLiderProducao && <AddProducaoForm onAdd={fetchRegistros} />}
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
             <Download className="w-4 h-4" /> Exportar
           </Button>
