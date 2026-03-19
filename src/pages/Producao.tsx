@@ -194,7 +194,7 @@ const Producao = () => {
       </div>
 
       {/* Pendentes badge */}
-      {isLider && pendentes > 0 && (
+      {canConfirm && pendentes > 0 && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-accent/10 border border-accent/30">
           <AlertTriangle className="w-4 h-4 text-accent" />
           <span className="text-sm text-accent font-medium">{pendentes} registro(s) aguardando confirmação</span>
