@@ -73,7 +73,7 @@ const Producao = () => {
 
   useEffect(() => {
     fetchRegistros();
-  }, [user, isLider]);
+  }, [user, isLider, isLiderProducao]);
 
   const handleConfirm = async (id: string) => {
     const { error } = await supabase
