@@ -87,12 +87,12 @@ export default function Login() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      toast.success("Líder cadastrado com sucesso! Faça login.");
+      toast.success("Gestor cadastrado com sucesso! Faça login.");
       setHasLeader(true);
       setMode("login");
       setEmail(setupEmail);
     } catch (err: any) {
-      toast.error(err.message || "Erro ao cadastrar líder.");
+      toast.error(err.message || "Erro ao cadastrar gestor.");
     }
     setSetupLoading(false);
   };
@@ -119,7 +119,7 @@ export default function Login() {
           <h1 className="text-xl font-bold text-foreground tracking-wide">Datatec</h1>
           <p className="text-sm text-muted-foreground">
             {mode === "setup"
-              ? "Configuração inicial — Cadastre o primeiro líder"
+              ? "Configuração inicial — Cadastre o primeiro gestor"
               : mode === "forgot"
               ? "Recuperar acesso"
               : "Acesse o sistema"}
@@ -141,7 +141,7 @@ export default function Login() {
               <Input id="setup-password" type="password" value={setupPassword} onChange={(e) => setSetupPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
             </div>
             <Button type="submit" className="w-full" disabled={setupLoading}>
-              {setupLoading ? "Cadastrando..." : "Cadastrar Líder"}
+              {setupLoading ? "Cadastrando..." : "Cadastrar Gestor"}
             </Button>
           </form>
         )}
@@ -184,8 +184,8 @@ export default function Login() {
 
         <p className="text-center text-xs text-muted-foreground">
           {mode === "setup"
-            ? "Este cadastro está disponível apenas porque ainda não há um líder no sistema."
-            : "Acesso fornecido pelo líder do setor."}
+            ? "Este cadastro está disponível apenas porque ainda não há um gestor no sistema."
+            : "Acesso fornecido pelo gestor."}
         </p>
       </div>
     </div>
