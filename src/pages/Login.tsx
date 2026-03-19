@@ -184,8 +184,8 @@ export default function Login() {
 
         <p className="text-center text-xs text-muted-foreground">
           {mode === "setup"
-            ? "Este cadastro está disponível apenas porque ainda não há um líder no sistema."
-            : "Acesso fornecido pelo líder do setor."}
+            ? "Este cadastro está disponível apenas porque ainda não há um gestor no sistema."
+            : "Acesso fornecido pelo gestor."}
         </p>
       </div>
     </div>

@@ -211,7 +211,7 @@ export default function GerenciarAcessos() {
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         u.role === "lider" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"
                       }`}>
-                        {u.role === "lider" ? "Líder" : "Funcionário"}
+                        {u.role === "lider" ? "Gestor" : "Funcionário"}
                       </span>
                     </td>
                     <td className="p-4">
