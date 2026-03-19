@@ -141,7 +141,7 @@ export default function Login() {
               <Input id="setup-password" type="password" value={setupPassword} onChange={(e) => setSetupPassword(e.target.value)} placeholder="Mínimo 6 caracteres" />
             </div>
             <Button type="submit" className="w-full" disabled={setupLoading}>
-              {setupLoading ? "Cadastrando..." : "Cadastrar Líder"}
+              {setupLoading ? "Cadastrando..." : "Cadastrar Gestor"}
             </Button>
           </form>
         )}
