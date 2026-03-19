@@ -13,8 +13,10 @@ const Funcionarios = () => {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>(defaultFuncionarios);
 
   const totalProd = funcionarios.reduce((acc, f) => acc + f.producaoHoje, 0);
-  const melhor = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0];
-  const tempoMedioGeral = (funcionarios.reduce((acc, f) => acc + f.tempoMedio, 0) / funcionarios.length).toFixed(1);
+  const melhor = [...funcionarios].sort((a, b) => b.eficiencia - a.eficiencia)[0] ?? null;
+  const tempoMedioGeral = funcionarios.length > 0
+    ? (funcionarios.reduce((acc, f) => acc + f.tempoMedio, 0) / funcionarios.length).toFixed(1)
+    : "0";
 
   const handleExport = () => {
     const data = funcionarios.map((f) => ({
@@ -78,8 +80,8 @@ const Funcionarios = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Destaque do Dia</p>
-              <p className="text-2xl font-bold text-foreground">{melhor.nome.split(" ")[0]}</p>
-              <p className="text-xs text-success">{melhor.eficiencia}% eficiência</p>
+              <p className="text-2xl font-bold text-foreground">{melhor ? melhor.nome.split(" ")[0] : "-"}</p>
+              {melhor && <p className="text-xs text-success">{melhor.eficiencia}% eficiência</p>}
             </div>
           </div>
         </div>
