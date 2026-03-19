@@ -237,7 +237,7 @@ const Producao = () => {
                   <td className="p-3 text-foreground whitespace-nowrap">
                     {new Date(r.data + "T00:00:00").toLocaleDateString("pt-BR")}
                   </td>
-                  {isLider && <td className="p-3 text-foreground">{r.nome_funcionario}</td>}
+                  {canConfirm && <td className="p-3 text-foreground">{r.nome_funcionario}</td>}
                   <td className="p-3 text-foreground text-xs">
                     <Badge variant="secondary" className="font-normal">
                       {TIPO_LABEL[r.tipo_producao] || r.tipo_producao}
