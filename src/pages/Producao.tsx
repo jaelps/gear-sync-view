@@ -56,7 +56,7 @@ const Producao = () => {
       return;
     }
 
-    if (data && isLider) {
+    if (data && (isLider || isLiderProducao)) {
       const userIds = [...new Set(data.map((r) => r.user_id))];
       const { data: profiles } = await supabase
         .from("profiles")
