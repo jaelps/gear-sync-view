@@ -40,7 +40,8 @@ const TIPO_LABEL: Record<string, string> = {
 };
 
 const Producao = () => {
-  const { user, isLider } = useAuth();
+  const { user, isLider, isLiderProducao } = useAuth();
+  const canConfirm = isLider || isLiderProducao;
   const [registros, setRegistros] = useState<ProducaoRegistro[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +56,7 @@ const Producao = () => {
       return;
     }
 
-    if (data && isLider) {
+    if (data && (isLider || isLiderProducao)) {
       const userIds = [...new Set(data.map((r) => r.user_id))];
       const { data: profiles } = await supabase
         .from("profiles")
@@ -72,7 +73,7 @@ const Producao = () => {
 
   useEffect(() => {
     fetchRegistros();
-  }, [user, isLider]);
+  }, [user, isLider, isLiderProducao]);
 
   const handleConfirm = async (id: string) => {
     const { error } = await supabase
@@ -122,11 +123,11 @@ const Producao = () => {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Módulo de Produção</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isLider ? "Acompanhe e confirme a produção dos funcionários" : "Registre sua produção diária"}
+            {canConfirm ? "Acompanhe e confirme a produção dos funcionários" : "Registre sua produção diária"}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {!isLider && <AddProducaoForm onAdd={fetchRegistros} />}
+          {!isLider && !isLiderProducao && <AddProducaoForm onAdd={fetchRegistros} />}
           <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
             <Download className="w-4 h-4" /> Exportar
           </Button>
@@ -193,7 +194,7 @@ const Producao = () => {
       </div>
 
       {/* Pendentes badge */}
-      {isLider && pendentes > 0 && (
+      {canConfirm && pendentes > 0 && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-accent/10 border border-accent/30">
           <AlertTriangle className="w-4 h-4 text-accent" />
           <span className="text-sm text-accent font-medium">{pendentes} registro(s) aguardando confirmação</span>
@@ -206,7 +207,7 @@ const Producao = () => {
           <thead>
             <tr className="border-b border-border/50">
               <th className="text-left p-3 text-muted-foreground font-medium">Data</th>
-              {isLider && <th className="text-left p-3 text-muted-foreground font-medium">Funcionário</th>}
+              {canConfirm && <th className="text-left p-3 text-muted-foreground font-medium">Funcionário</th>}
               <th className="text-left p-3 text-muted-foreground font-medium">Tipo</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Produzido</th>
               <th className="text-right p-3 text-muted-foreground font-medium">Meta</th>
@@ -214,19 +215,19 @@ const Producao = () => {
               <th className="text-right p-3 text-muted-foreground font-medium">Perdas</th>
               <th className="text-left p-3 text-muted-foreground font-medium">Justificativa</th>
               <th className="text-center p-3 text-muted-foreground font-medium">Status</th>
-              {isLider && <th className="text-center p-3 text-muted-foreground font-medium">Ação</th>}
+              {canConfirm && <th className="text-center p-3 text-muted-foreground font-medium">Ação</th>}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={isLider ? 10 : 8} className="p-6 text-center text-muted-foreground">
+              <td colSpan={canConfirm ? 10 : 8} className="p-6 text-center text-muted-foreground">
                   Carregando...
                 </td>
               </tr>
             ) : registros.length === 0 ? (
               <tr>
-                <td colSpan={isLider ? 10 : 8} className="p-6 text-center text-muted-foreground">
+              <td colSpan={canConfirm ? 10 : 8} className="p-6 text-center text-muted-foreground">
                   Nenhum registro encontrado.
                 </td>
               </tr>
@@ -236,7 +237,7 @@ const Producao = () => {
                   <td className="p-3 text-foreground whitespace-nowrap">
                     {new Date(r.data + "T00:00:00").toLocaleDateString("pt-BR")}
                   </td>
-                  {isLider && <td className="p-3 text-foreground">{r.nome_funcionario}</td>}
+                  {canConfirm && <td className="p-3 text-foreground">{r.nome_funcionario}</td>}
                   <td className="p-3 text-foreground text-xs">
                     <Badge variant="secondary" className="font-normal">
                       {TIPO_LABEL[r.tipo_producao] || r.tipo_producao}
@@ -270,7 +271,7 @@ const Producao = () => {
                       </Badge>
                     )}
                   </td>
-                  {isLider && (
+                  {canConfirm && (
                     <td className="p-3 text-center">
                       {!r.confirmada && (
                         <Button size="sm" variant="ghost" onClick={() => handleConfirm(r.id)} className="gap-1 text-success hover:text-success">

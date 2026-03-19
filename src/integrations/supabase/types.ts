@@ -120,22 +120,28 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          lider_producao: boolean
           nome: string
           responsavel_estoque: boolean
+          responsavel_limpeza: boolean
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          lider_producao?: boolean
           nome: string
           responsavel_estoque?: boolean
+          responsavel_limpeza?: boolean
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          lider_producao?: boolean
           nome?: string
           responsavel_estoque?: boolean
+          responsavel_limpeza?: boolean
           user_id?: string
         }
         Relationships: []
@@ -197,6 +203,10 @@ export type Database = {
     }
     Functions: {
       has_any_leader: { Args: never; Returns: boolean }
+      has_profile_flag: {
+        Args: { _flag: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
