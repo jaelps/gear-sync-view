@@ -227,7 +227,7 @@ const Producao = () => {
               </tr>
             ) : registros.length === 0 ? (
               <tr>
-                <td colSpan={isLider ? 10 : 8} className="p-6 text-center text-muted-foreground">
+              <td colSpan={canConfirm ? 10 : 8} className="p-6 text-center text-muted-foreground">
                   Nenhum registro encontrado.
                 </td>
               </tr>
