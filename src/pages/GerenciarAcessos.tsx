@@ -132,7 +132,7 @@ export default function GerenciarAcessos() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="funcionario">Funcionário</SelectItem>
-                    <SelectItem value="lider">Líder de Setor</SelectItem>
+                    <SelectItem value="lider">Gestor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
