@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         { icon: LayoutDashboard, label: "Dashboard", path: "/" },
         { icon: Package, label: "Estoque", path: "/estoque" },
         { icon: Factory, label: "Produção", path: "/producao" },
-        { icon: Users, label: "Funcionários", path: "/funcionarios" },
+        { icon: Users, label: "Análise de Desempenho", path: "/funcionarios" },
         { icon: Settings, label: "Equipamentos", path: "/equipamentos" },
         { icon: ClipboardList, label: "Pendências", path: "/pendencias" },
         { icon: UserCog, label: "Acessos", path: "/acessos" },
